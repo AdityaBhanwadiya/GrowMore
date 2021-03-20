@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ProductDescriptionFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <TextView
+        android:id="@+id/tv_product_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:text="A crop is a plant or animal product that can be grown and harvested extensively for profit or subsistence. Crops may refer either to the harvested parts or to the harvest in a more refined state. Most crops are cultivated in agriculture or aquaculture. A crop may include macroscopic fungus (e.g. mushrooms), or alga.
+Most crops are harvested as food for humans or fodder for livestock.\n\n
+Some crops are gathered from the wild (including intensive gathering, e.g. ginseng).\n\n
+Important non-food crops include horticulture, floriculture and industrial crops. Horticulture crops include plants used for other crops (e.g. fruit trees). Floriculture crops include bedding plants, houseplants, flowering garden and pot plants, cut cultivated greens, and cut flowers. Industrial crops are produced for clothing (fiber crops), biofuel (energy crops, algae fuel), or medicine (medicinal plants)."
+        android:textColor="@color/black" />
+
+</FrameLayout>
