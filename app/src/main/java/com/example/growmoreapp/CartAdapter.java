@@ -26,14 +26,14 @@ import static android.media.CamcorderProfile.get;
 public class CartAdapter extends RecyclerView.Adapter {
 
     private List<CartItemModel> cartItemModelList;
-    //    private boolean showDeleteBtn;
+    private boolean showDeleteBtn;
     private int lastpos = -1;
     private TextView cartTotalAmount;
 
-    public CartAdapter(List<CartItemModel> cartItemModelList) {
+    public CartAdapter(List<CartItemModel> cartItemModelList, TextView cartTotalAmount,boolean showDeleteBtn) {
         this.cartItemModelList = cartItemModelList;
         this.cartTotalAmount = cartTotalAmount;
-  //      this.showDeleteBtn = showDeleteBtn;
+        this.showDeleteBtn = showDeleteBtn;
     }
 
 
@@ -175,12 +175,18 @@ public class CartAdapter extends RecyclerView.Adapter {
                 }
             });
 
+            if(showDeleteBtn){
+                deleteBtn.setVisibility(View.VISIBLE);
+            }
+            else{
+                deleteBtn.setVisibility(View.GONE);
+            }
             deleteBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (!ProductDetailsActivity.running_cart_querry) {
                         ProductDetailsActivity.running_cart_querry = true;
-                        DBqueries.removeFromCart(position, itemView.getContext(),cartTotalAmount);
+                        DBqueries.removeFromCart(position, itemView.getContext(), cartTotalAmount);
                     }
                 }
             });
@@ -213,8 +219,8 @@ public class CartAdapter extends RecyclerView.Adapter {
                 deliveryPrice.setText("Rs." + deliveryPricetext + "/-");
             }
             totalAmount.setText("Rs." + totalAmounttext + "/-");
-            totalAmount.setText("Rs." + totalAmounttext + "/-");
-//
+            cartTotalAmount.setText("Rs." + totalAmounttext + "/-");
+
 //            LinearLayout parent = (LinearLayout) cartTotalAmount.getParent().getParent();
 //            if (totalItemPriceText == 0) {
 //                if (DeliveryActivity.fromCart) {

@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.navigation.NavigationView;
@@ -50,6 +51,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int ACCOUNT_FRAGMENT = 3;
     public static boolean showCart = false;
     public static DrawerLayout drawer;
+    private int scrollFlags;
+    private AppBarLayout.LayoutParams params;
 
     private int currentFragment = -1;
     private Toolbar toolbar;
@@ -73,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
         actionLogo = findViewById(R.id.action_logo);
         setSupportActionBar(toolbar);
         // getSupportActionBar().setDisplayShowTitleEnabled(false);
+        params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
+        scrollFlags = params.getScrollFlags();
 
 
         drawer = findViewById(R.id.drawer_layout);
@@ -216,8 +221,11 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setTitle(title);
         invalidateOptionsMenu();
         setFragment(fragment, fragmentNo);
-        if (fragmentNo == CART_FRAGMENT) {
+        if (fragmentNo == CART_FRAGMENT || showCart) {
             navigationView.getMenu().getItem(2).setChecked(true);
+            params.setScrollFlags(0);
+        } else {
+            params.setScrollFlags(scrollFlags);
         }
     }
 

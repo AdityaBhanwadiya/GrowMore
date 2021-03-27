@@ -2,6 +2,7 @@ package com.example.growmoreapp;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -44,6 +45,9 @@ public class DBqueries {
 
     public static List<String> cartList = new ArrayList<>();
     public static List<CartItemModel> cartItemModelList = new ArrayList<>();
+
+    public static List<AddressesModel> addressesModelList=new ArrayList<>();
+    public static int selectedAddress=-1;
 
     // public static List<MyOrderItemModel> myOrderItemModelList=new ArrayList<>();
 
@@ -251,6 +255,48 @@ public class DBqueries {
                     }
                 });
 
+    }
+
+    public static void loadAddresses(final Context context, final boolean gotoDeliveryActivity){
+        addressesModelList.clear();
+
+        firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid()).collection("USER_DATA").document("MY_ADDRESSES").get()
+                .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if(task.isSuccessful()){
+                            if((long)task.getResult().get("list_size") == 0){
+                                context.startActivity(new Intent(context, AddAddressActivity.class).putExtra("INTENT","deliveryIntent"));
+                            }else {
+                                for(long x=1;x<=(long)task.getResult().get("list_size");x++){
+                                    addressesModelList.add(new AddressesModel(
+                                             task.getResult().get("city_"+x).toString()
+                                            ,task.getResult().get("locality_"+x).toString()
+                                            ,task.getResult().get("flat_no_"+x).toString()
+                                            ,task.getResult().get("pincode_"+x).toString()
+                                            ,task.getResult().get("landmark_"+x).toString()
+                                            ,task.getResult().get("name_"+x).toString()
+                                            ,task.getResult().get("mobile_no_"+x).toString()
+                                            ,task.getResult().get("alternate_mobile_no_"+x).toString()
+                                            ,task.getResult().get("state_"+x).toString()
+                                            ,(boolean)task.getResult().get("selected_"+x)
+
+                                    ));
+                                    if((boolean)task.getResult().get("selected_"+x)){
+                                        selectedAddress=Integer.parseInt(String.valueOf(x-1));
+                                    }
+                                }
+                                if (gotoDeliveryActivity) {
+                                    context.startActivity(new Intent(context, DeliveryActivity.class));
+                                }
+                            }
+                        }else {
+                            String error=task.getException().getMessage();
+                            Toast.makeText(context,error,Toast.LENGTH_SHORT).show();
+                        }
+
+                    }
+                });
     }
 
 
