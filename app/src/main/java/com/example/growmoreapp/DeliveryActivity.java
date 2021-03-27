@@ -21,6 +21,8 @@ public class DeliveryActivity extends AppCompatActivity {
     private RecyclerView deliveryRecyclerView;
     private Button changeORaddNewAddressBtn;
     public static final int SELECT_ADDRESS = 0;
+    public static List<CartItemModel> cartItemModelList;
+    public static boolean fromCart;
 
 
     @Override

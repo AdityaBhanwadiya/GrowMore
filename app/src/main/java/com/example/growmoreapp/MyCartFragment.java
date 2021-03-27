@@ -60,24 +60,26 @@ public class MyCartFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_my_cart, container, false);
 
-//        /////loading dialog////
+        /////loading dialog////
 //        loadingDialog = new Dialog(getContext());
 //        loadingDialog.setContentView(R.layout.loading_progress_dialog);
 //        loadingDialog.setCancelable(false);
 //        loadingDialog.getWindow().setBackgroundDrawable(getContext().getDrawable(R.drawable.slider_background));
 //        loadingDialog.getWindow().setLayout(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
 //        loadingDialog.show();
-//        ////////////////////////
+        ////////////////////////
 
         cartItemsRecyclerView = view.findViewById(R.id.cart_items_recyclerview);
         continueBtn = view.findViewById(R.id.cart_continue_btn);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         cartItemsRecyclerView.setLayoutManager(layoutManager);
 
-//        if (cartItemModelList.size() == 0) {
-//            cartItemModelList.clear();
-//            DBqueries.loadCartList(getContext(), loadingDialog, true);
+        if (DBqueries.cartItemModelList.size() == 0) {
+            DBqueries.cartList.clear();
+            DBqueries.loadCartList(getContext(), true);
+        }
 //        } else {
 //            loadingDialog.dismiss();
 //        }

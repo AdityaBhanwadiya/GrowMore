@@ -24,11 +24,11 @@ public class CartItemModel {
     private String productPrice;
 
 
-    public CartItemModel(int type, String productID,String productImage, String productTitle, String farmerName, long productQuantity, String productPrice) {
+    public CartItemModel(int type, String productID, String productImage, String productTitle, String farmerName, long productQuantity, String productPrice) {
         this.type = type;
         this.productImage = productImage;
         this.productID = productID;
-       this.productQuantity = productQuantity;
+        this.productQuantity = productQuantity;
         this.productTitle = productTitle;
         this.farmerName = farmerName;
         this.productPrice = productPrice;
@@ -99,7 +99,7 @@ public class CartItemModel {
         this.totalAmount = totalAmount;
     }
 
-    public String  getTotalItems() {
+    public String getTotalItems() {
         return totalItems;
     }
 

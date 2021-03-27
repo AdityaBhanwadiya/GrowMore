@@ -1,12 +1,16 @@
 package com.example.growmoreapp;
 
 import android.app.Dialog;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,10 +25,15 @@ import static android.media.CamcorderProfile.get;
 
 public class CartAdapter extends RecyclerView.Adapter {
 
-    List<CartItemModel> cartItemModelList;
+    private List<CartItemModel> cartItemModelList;
+//    private boolean showDeleteBtn;
+    private int lastpos = -1;
+//    private TextView cartTotalAmount;
 
     public CartAdapter(List<CartItemModel> cartItemModelList) {
         this.cartItemModelList = cartItemModelList;
+//        this.cartTotalAmount = cartTotalAmount;
+//        this.showDeleteBtn = showDeleteBtn;
     }
 
 
@@ -67,19 +76,50 @@ public class CartAdapter extends RecyclerView.Adapter {
                 String title = cartItemModelList.get(position).getProductTitle();
                 String name = cartItemModelList.get(position).getFarmerName();
                 String price = cartItemModelList.get(position).getProductPrice();
+                //Long productQty = cartItemModelList.get(position).getProductQuantity();
 
-                ((CartItemViewHolder)holder).setItemDetails(productID,resource,title,name,price);
+                ((CartItemViewHolder) holder).setItemDetails(productID, resource, title, name, price, position);
                 break;
-            case CartItemModel.TOTAL_AMOUNT:
-                String totalItems = cartItemModelList.get(position).getTotalItems();
-                String totalItemPrice = cartItemModelList.get(position).getTotalItemPrice();
-                String deliveryPrice = cartItemModelList.get(position).getDeliveryPrice();
-                String totalAmount = cartItemModelList.get(position).getTotalAmount();
 
-                ((CartTotalAmountViewHolder)holder).setTotalItems(totalItems,totalItemPrice,deliveryPrice,totalAmount);
+            case CartItemModel.TOTAL_AMOUNT:
+                int totalItems = 0, totalAmount=0;
+                int totalItemsPrice = 0;
+                String deliveryPrice=null;
+//
+//                for (int x = 0; x < cartItemModelList.size(); x++) {
+//                    if (cartItemModelList.get(x).getType() == CartItemModel.CART_ITEM && cartItemModelList.get(x)) {
+//                        int qty = Integer.parseInt(String.valueOf(cartItemModelList.get(x).getProductQuantity()));
+//                        totalItems = totalItems + qty;
+//                        if (TextUtils.isEmpty(cartItemModelList.get(x))) {
+//                            totalItemsPrice = totalItemsPrice + Integer.parseInt(cartItemModelList.get(x).getProductPrice()) * qty;
+//                        } else {
+//                            totalItemsPrice = totalItemsPrice + Integer.parseInt(cartItemModelList.get(x)) * qty;
+//                        }
+//                    }
+//                }
+//
+//                if (totalItemsPrice > 500) {
+//                    deliveryPrice = "FREE";
+//                    totalAmount = totalItemsPrice;
+//                } else {
+//                    deliveryPrice = "60";
+//                    totalAmount = totalItemsPrice + 60;
+//                }
+
+                cartItemModelList.get(position).getTotalItems();
+                cartItemModelList.get(position).getTotalItemPrice();
+                cartItemModelList.get(position).getDeliveryPrice();
+                cartItemModelList.get(position).getTotalAmount();
+
+                ((CartTotalAmountViewHolder) holder).setTotalAmount(totalItems, totalItemsPrice, deliveryPrice, totalAmount);
                 break;
             default:
                 return;
+        }
+        if (lastpos < position) {
+            Animation animation = AnimationUtils.loadAnimation(holder.itemView.getContext(), R.anim.fade_in);
+            holder.itemView.setAnimation(animation);
+            lastpos = position;
         }
 
     }
@@ -96,6 +136,8 @@ public class CartAdapter extends RecyclerView.Adapter {
         private TextView farmerName;
         private TextView productQuantity;
 
+        private LinearLayout deleteBtn;
+
         public CartItemViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -104,10 +146,11 @@ public class CartAdapter extends RecyclerView.Adapter {
             productPrice = itemView.findViewById(R.id.product_incart_price);
             farmerName = itemView.findViewById(R.id.incart_farmer_name2);
             productQuantity = itemView.findViewById(R.id.product_qnty);
+            deleteBtn = itemView.findViewById(R.id.remove_item_btn);
 
         }
 
-        private void setItemDetails(String productID, String  resource, String title, String fname, String productPriceText) {
+        private void setItemDetails(String productID, String resource, String title, String fname, String productPriceText, int position) {
             Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.ic_menu_camera)).into(productImage);
             productTitle.setText(title);
             farmerName.setText(fname);
@@ -117,7 +160,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                 public void onClick(View v) {
                     Dialog qunatityDialog = new Dialog(itemView.getContext());
                     qunatityDialog.setContentView(R.layout.quantity_dialog);
-                    qunatityDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT,ViewGroup.LayoutParams.WRAP_CONTENT);
+                    qunatityDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                     qunatityDialog.setCancelable(false);
 
                     final EditText qtyNo = qunatityDialog.findViewById(R.id.quantity_no);
@@ -140,6 +183,16 @@ public class CartAdapter extends RecyclerView.Adapter {
                     qunatityDialog.show();
                 }
             });
+
+            deleteBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (!ProductDetailsActivity.running_cart_querry) {
+                        ProductDetailsActivity.running_cart_querry = true;
+                        DBqueries.removeFromCart(position, itemView.getContext());
+                    }
+                }
+            });
         }
     }
 
@@ -160,11 +213,30 @@ public class CartAdapter extends RecyclerView.Adapter {
             totalAmount = itemView.findViewById(R.id.total_price);
         }
 
-        protected void setTotalItems(String totalItemsText, String totalItemPriceText, String deliverItemtext, String totalAmountTetx) {
-            totalItems.setText(totalItemsText);
-            totalItemsPrice.setText(totalItemPriceText);
-            deliveryPrice.setText(deliverItemtext);
-            totalAmount.setText(totalAmountTetx);
+        private void setTotalAmount(int totalItemText, int totalItemPriceText, String deliveryPricetext, int totalAmounttext) {
+            totalItems.setText("Price(" + totalItemText + " items");
+            totalItemsPrice.setText("Rs." + totalItemPriceText + "/-");
+            if (deliveryPricetext.equals("FREE")) {
+                deliveryPrice.setText(deliveryPricetext);
+            } else {
+                deliveryPrice.setText("Rs." + deliveryPricetext + "/-");
+            }
+            totalAmount.setText("Rs." + totalAmounttext + "/-");
+//            cartTotalAmount.setText("Rs." + totalAmounttext + "/-");
+//
+//            LinearLayout parent = (LinearLayout) cartTotalAmount.getParent().getParent();
+//            if (totalItemPriceText == 0) {
+//                if (DeliveryActivity.fromCart) {
+//                    cartItemModelList.remove(cartItemModelList.size() - 1);
+//                    DeliveryActivity.cartItemModelList.remove(DeliveryActivity.cartItemModelList.size() - 1);
+//                }
+//                if (showDeleteBtn) {
+//                    cartItemModelList.remove(cartItemModelList.size() - 1);
+//                }
+//                parent.setVisibility(View.GONE);
+//            } else {
+//                parent.setVisibility(View.VISIBLE);
+//            }
         }
     }
 }
