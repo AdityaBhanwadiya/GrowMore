@@ -154,7 +154,7 @@ public class DBqueries {
         }
     }
 
-    public static void loadCartList(final Context context ,final boolean loadProductData) {
+    public static void loadCartList(final Context context ,final boolean loadProductData,final TextView cartTotalAmount) {
         cartList.clear();
         firebaseFirestore.collection("USERS").document(FirebaseAuth.getInstance().getUid())
                 .collection("USER_DATA").document("MY_CART").get()
@@ -179,14 +179,27 @@ public class DBqueries {
                                                 @Override
                                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                                     if (task.isSuccessful()) {
+                                                        int index=0;
+
+                                                        if(cartList.size()>=2){
+                                                            index=cartList.size()-2;
+                                                        }
+
                                                         final DocumentSnapshot documentSnapshot = task.getResult();
-                                                        cartItemModelList.add(new CartItemModel(CartItemModel.CART_ITEM
+                                                        cartItemModelList.add(index,new CartItemModel(CartItemModel.CART_ITEM
                                                                 , productId
                                                                 , documentSnapshot.get("product_image_1").toString()
                                                                 , documentSnapshot.get("product_title").toString()
                                                                 , documentSnapshot.get("farmer_name").toString()
                                                                 , (long) 100
                                                                 , documentSnapshot.get("product_price").toString()));
+
+                                                        if(cartList.size() == 1){
+                                                            cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
+                                                        }
+                                                        if(cartList.size() == 0) {
+                                                            cartItemModelList.clear();
+                                                        }
                                                         MyCartFragment.cartAdapter.notifyDataSetChanged();
                                                     } else {
                                                         String error = task.getException().getMessage();
@@ -204,7 +217,7 @@ public class DBqueries {
                 });
     }
 
-    public static void removeFromCart(final int index, final Context context) {
+    public static void removeFromCart(final int index, final Context context, final TextView cartTotalAmount) {
         final String removedProductId = cartList.get(index);
         cartList.remove(index);
 
@@ -225,6 +238,9 @@ public class DBqueries {
                                 cartItemModelList.remove(index);
                                 MyCartFragment.cartAdapter.notifyDataSetChanged();
                             }
+                            if(cartList.size() == 0) {
+                                cartItemModelList.clear();
+                            }
                             Toast.makeText(context, "Removed Successfully!", Toast.LENGTH_SHORT).show();
                         } else {
                             cartList.add(index, removedProductId);
@@ -244,6 +260,8 @@ public class DBqueries {
         lists.clear();
         myRatedIds.clear();
         myRating.clear();
+        cartList.clear();
+        cartItemModelList.clear();
 
     }
 }

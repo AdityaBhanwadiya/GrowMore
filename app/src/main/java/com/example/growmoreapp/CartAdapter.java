@@ -26,14 +26,14 @@ import static android.media.CamcorderProfile.get;
 public class CartAdapter extends RecyclerView.Adapter {
 
     private List<CartItemModel> cartItemModelList;
-//    private boolean showDeleteBtn;
+    //    private boolean showDeleteBtn;
     private int lastpos = -1;
-//    private TextView cartTotalAmount;
+    private TextView cartTotalAmount;
 
     public CartAdapter(List<CartItemModel> cartItemModelList) {
         this.cartItemModelList = cartItemModelList;
-//        this.cartTotalAmount = cartTotalAmount;
-//        this.showDeleteBtn = showDeleteBtn;
+        this.cartTotalAmount = cartTotalAmount;
+  //      this.showDeleteBtn = showDeleteBtn;
     }
 
 
@@ -82,34 +82,25 @@ public class CartAdapter extends RecyclerView.Adapter {
                 break;
 
             case CartItemModel.TOTAL_AMOUNT:
-                int totalItems = 0, totalAmount=0;
+                int totalItems = 0, totalAmount;
                 int totalItemsPrice = 0;
-                String deliveryPrice=null;
-//
-//                for (int x = 0; x < cartItemModelList.size(); x++) {
-//                    if (cartItemModelList.get(x).getType() == CartItemModel.CART_ITEM && cartItemModelList.get(x)) {
-//                        int qty = Integer.parseInt(String.valueOf(cartItemModelList.get(x).getProductQuantity()));
-//                        totalItems = totalItems + qty;
-//                        if (TextUtils.isEmpty(cartItemModelList.get(x))) {
-//                            totalItemsPrice = totalItemsPrice + Integer.parseInt(cartItemModelList.get(x).getProductPrice()) * qty;
-//                        } else {
-//                            totalItemsPrice = totalItemsPrice + Integer.parseInt(cartItemModelList.get(x)) * qty;
-//                        }
-//                    }
-//                }
-//
-//                if (totalItemsPrice > 500) {
-//                    deliveryPrice = "FREE";
-//                    totalAmount = totalItemsPrice;
-//                } else {
-//                    deliveryPrice = "60";
-//                    totalAmount = totalItemsPrice + 60;
-//                }
+                String deliveryPrice = null;
 
-                cartItemModelList.get(position).getTotalItems();
-                cartItemModelList.get(position).getTotalItemPrice();
-                cartItemModelList.get(position).getDeliveryPrice();
-                cartItemModelList.get(position).getTotalAmount();
+                for (int x = 0; x < cartItemModelList.size(); x++) {
+                    if (cartItemModelList.get(x).getType() == CartItemModel.CART_ITEM) {
+                        int qty = Integer.parseInt(String.valueOf(cartItemModelList.get(x).getProductQuantity()));
+                        totalItems = totalItems + 1;
+                        totalItemsPrice = totalItemsPrice + Integer.parseInt(cartItemModelList.get(x).getProductPrice());
+                    }
+                }
+
+                if (totalItemsPrice > 500) {
+                    deliveryPrice = "FREE";
+                    totalAmount = totalItemsPrice;
+                } else {
+                    deliveryPrice = "60";
+                    totalAmount = totalItemsPrice + 60;
+                }
 
                 ((CartTotalAmountViewHolder) holder).setTotalAmount(totalItems, totalItemsPrice, deliveryPrice, totalAmount);
                 break;
@@ -189,7 +180,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                 public void onClick(View view) {
                     if (!ProductDetailsActivity.running_cart_querry) {
                         ProductDetailsActivity.running_cart_querry = true;
-                        DBqueries.removeFromCart(position, itemView.getContext());
+                        DBqueries.removeFromCart(position, itemView.getContext(),cartTotalAmount);
                     }
                 }
             });
@@ -214,7 +205,7 @@ public class CartAdapter extends RecyclerView.Adapter {
         }
 
         private void setTotalAmount(int totalItemText, int totalItemPriceText, String deliveryPricetext, int totalAmounttext) {
-            totalItems.setText("Price(" + totalItemText + " items");
+            totalItems.setText("Price(" + totalItemText + " items)");
             totalItemsPrice.setText("Rs." + totalItemPriceText + "/-");
             if (deliveryPricetext.equals("FREE")) {
                 deliveryPrice.setText(deliveryPricetext);
@@ -222,7 +213,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                 deliveryPrice.setText("Rs." + deliveryPricetext + "/-");
             }
             totalAmount.setText("Rs." + totalAmounttext + "/-");
-//            cartTotalAmount.setText("Rs." + totalAmounttext + "/-");
+            totalAmount.setText("Rs." + totalAmounttext + "/-");
 //
 //            LinearLayout parent = (LinearLayout) cartTotalAmount.getParent().getParent();
 //            if (totalItemPriceText == 0) {

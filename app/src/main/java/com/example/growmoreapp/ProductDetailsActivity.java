@@ -177,7 +177,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
                 }
 
                 if (DBqueries.cartList.size() == 0) {
-                    DBqueries.loadCartList(ProductDetailsActivity.this,false);
+                    DBqueries.loadCartList(ProductDetailsActivity.this,false,new TextView(ProductDetailsActivity.this));
                 }
 
 
@@ -415,7 +415,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
             }
 
             if (DBqueries.cartList.size() == 0) {
-                DBqueries.loadCartList(ProductDetailsActivity.this,false);
+                DBqueries.loadCartList(ProductDetailsActivity.this,false,new TextView(ProductDetailsActivity.this));
             }
 
         } else {
