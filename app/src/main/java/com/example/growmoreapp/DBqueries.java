@@ -196,10 +196,13 @@ public class DBqueries {
                                                                 , documentSnapshot.get("product_title").toString()
                                                                 , documentSnapshot.get("farmer_name").toString()
                                                                 , (long) 100
-                                                                , documentSnapshot.get("product_price").toString()));
+                                                                , documentSnapshot.get("product_price").toString()
+                                                                ,(boolean)documentSnapshot.get("in_stock")));
 
                                                         if(cartList.size() == 1){
                                                             cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
+//                                                            LinearLayout parent = (LinearLayout)cartTotalAmount.getParent().getParent();
+//                                                            parent.setVisibility(View.VISIBLE);
                                                         }
                                                         if(cartList.size() == 0) {
                                                             cartItemModelList.clear();
@@ -243,6 +246,8 @@ public class DBqueries {
                                 MyCartFragment.cartAdapter.notifyDataSetChanged();
                             }
                             if(cartList.size() == 0) {
+                                LinearLayout parent = (LinearLayout)cartTotalAmount.getParent().getParent();
+                                parent.setVisibility(View.GONE);
                                 cartItemModelList.clear();
                             }
                             Toast.makeText(context, "Removed Successfully!", Toast.LENGTH_SHORT).show();

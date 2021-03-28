@@ -115,29 +115,33 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-                int id = item.getItemId();
-
-                if (id == R.id.nav_home) {
-                    actionLogo.setVisibility(View.VISIBLE);
-                    invalidateOptionsMenu();
-                    setFragment(new HomeFragment(), HOME_FRAGMENT);
-                } else if (id == R.id.nav_orders) {
-                    gotoFragment("My Orders", new MyOrdersFragment(), ORDERS_FRAGMENT);
-                } else if (id == R.id.nav_cart) {
-                    gotoFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
-                } else if (id == R.id.nav_account) {
-                    gotoFragment("My Account", new MyAccountFragment(), ACCOUNT_FRAGMENT);
-                } else if (id == R.id.nav_sbc) {
-
-                } else if (id == R.id.nav_logout) {
-                    FirebaseAuth.getInstance().signOut();
-                    DBqueries.clearData();
-                    DBqueries.email = null;  //my code
-                    startActivity(new Intent(MainActivity.this, RegisterActivity.class));
-                    finish();
-                }
-
                 drawer.closeDrawer(GravityCompat.START);
+                drawer.addDrawerListener(new DrawerLayout.SimpleDrawerListener() {
+                    @Override
+                    public void onDrawerClosed(View drawerView) {
+                        int id = item.getItemId();
+
+                        if (id == R.id.nav_home) {
+                            actionLogo.setVisibility(View.VISIBLE);
+                            invalidateOptionsMenu();
+                            setFragment(new HomeFragment(), HOME_FRAGMENT);
+                        } else if (id == R.id.nav_orders) {
+                            gotoFragment("My Orders", new MyOrdersFragment(), ORDERS_FRAGMENT);
+                        } else if (id == R.id.nav_cart) {
+                            gotoFragment("My Cart", new MyCartFragment(), CART_FRAGMENT);
+                        } else if (id == R.id.nav_account) {
+                            gotoFragment("My Account", new MyAccountFragment(), ACCOUNT_FRAGMENT);
+                        } else if (id == R.id.nav_sbc) {
+
+                        } else if (id == R.id.nav_logout) {
+                            FirebaseAuth.getInstance().signOut();
+                            DBqueries.clearData();
+                            DBqueries.email = null;  //my code
+                            startActivity(new Intent(MainActivity.this, RegisterActivity.class));
+                            finish();
+                        }
+                    }
+                });
                 return true;
             }
         });

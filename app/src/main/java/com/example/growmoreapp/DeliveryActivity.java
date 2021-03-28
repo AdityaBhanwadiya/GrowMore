@@ -23,6 +23,7 @@ public class DeliveryActivity extends AppCompatActivity {
     public static final int SELECT_ADDRESS = 0;
     private TextView totalAmount, fullname, fullAddress, pincode;
     private String name, mobileNo;
+    public static List<CartItemModel> cartItemModelList;
 
 
     @Override
@@ -46,7 +47,7 @@ public class DeliveryActivity extends AppCompatActivity {
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         deliveryRecyclerView.setLayoutManager(layoutManager);
 
-        CartAdapter cartAdapter = new CartAdapter(DBqueries.cartItemModelList, totalAmount, false);
+        CartAdapter cartAdapter = new CartAdapter(cartItemModelList, totalAmount, false);
         deliveryRecyclerView.setAdapter(cartAdapter);
         cartAdapter.notifyDataSetChanged();
 

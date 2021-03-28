@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -82,10 +83,12 @@ public class MyCartFragment extends Fragment {
         if (DBqueries.cartItemModelList.size() == 0) {
             DBqueries.cartList.clear();
             DBqueries.loadCartList(getContext(), true,new TextView(getContext()));
+        } else {
+            if(cartItemModelList.get(cartItemModelList.size()-1).getType() == CartItemModel.TOTAL_AMOUNT) {
+                LinearLayout parent = (LinearLayout)totalAmount.getParent().getParent();
+                parent.setVisibility(View.VISIBLE);
+            }
         }
-//        } else {
-//            loadingDialog.dismiss();
-//        }
 
 
         cartAdapter = new CartAdapter(DBqueries.cartItemModelList, totalAmount,true);
@@ -96,6 +99,15 @@ public class MyCartFragment extends Fragment {
         continueBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DeliveryActivity.cartItemModelList = new ArrayList<>();
+
+                for(int x=0;x< cartItemModelList.size();x++){
+                    CartItemModel cartItemModel = cartItemModelList.get(x);
+                    if(cartItemModel.isInStock()){
+                        DeliveryActivity.cartItemModelList.add(cartItemModel);
+                    }
+                }
+                DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
                 DBqueries.loadAddresses(getContext(),true);
             }
         });

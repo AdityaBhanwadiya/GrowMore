@@ -1,6 +1,9 @@
 package com.example.growmoreapp;
 
 import android.app.Dialog;
+import android.content.res.ColorStateList;
+import android.graphics.Color;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -76,9 +80,10 @@ public class CartAdapter extends RecyclerView.Adapter {
                 String title = cartItemModelList.get(position).getProductTitle();
                 String name = cartItemModelList.get(position).getFarmerName();
                 String price = cartItemModelList.get(position).getProductPrice();
+                Boolean inStock = cartItemModelList.get(position).isInStock();
                 //Long productQty = cartItemModelList.get(position).getProductQuantity();
 
-                ((CartItemViewHolder) holder).setItemDetails(productID, resource, title, name, price, position);
+                ((CartItemViewHolder) holder).setItemDetails(productID, resource, title, name, price, position,inStock );
                 break;
 
             case CartItemModel.TOTAL_AMOUNT:
@@ -87,7 +92,7 @@ public class CartAdapter extends RecyclerView.Adapter {
                 String deliveryPrice = null;
 
                 for (int x = 0; x < cartItemModelList.size(); x++) {
-                    if (cartItemModelList.get(x).getType() == CartItemModel.CART_ITEM) {
+                    if (cartItemModelList.get(x).getType() == CartItemModel.CART_ITEM && cartItemModelList.get(x).isInStock()) {
                         int qty = Integer.parseInt(String.valueOf(cartItemModelList.get(x).getProductQuantity()));
                         totalItems = totalItems + 1;
                         totalItemsPrice = totalItemsPrice + Integer.parseInt(cartItemModelList.get(x).getProductPrice());
@@ -141,39 +146,52 @@ public class CartAdapter extends RecyclerView.Adapter {
 
         }
 
-        private void setItemDetails(String productID, String resource, String title, String fname, String productPriceText, int position) {
+        @RequiresApi(api = Build.VERSION_CODES.M)
+        private void setItemDetails(String productID, String resource, String title, String fname, String productPriceText, int position , boolean inStock) {
             Glide.with(itemView.getContext()).load(resource).apply(new RequestOptions().placeholder(R.drawable.ic_menu_camera)).into(productImage);
             productTitle.setText(title);
             farmerName.setText(fname);
-            productPrice.setText(productPriceText);
-            productQuantity.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Dialog qunatityDialog = new Dialog(itemView.getContext());
-                    qunatityDialog.setContentView(R.layout.quantity_dialog);
-                    qunatityDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                    qunatityDialog.setCancelable(false);
+            if(inStock){
+                productPrice.setText("Rs. "+ productPriceText);
+                productPrice.setTextColor(Color.parseColor("#000000"));
 
-                    final EditText qtyNo = qunatityDialog.findViewById(R.id.quantity_no);
-                    Button cancelBtn = qunatityDialog.findViewById(R.id.cancel_btn);
-                    Button okBtn = qunatityDialog.findViewById(R.id.ok_btn);
+                productQuantity.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Dialog qunatityDialog = new Dialog(itemView.getContext());
+                        qunatityDialog.setContentView(R.layout.quantity_dialog);
+                        qunatityDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+                        qunatityDialog.setCancelable(false);
 
-                    cancelBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            qunatityDialog.dismiss();
-                        }
-                    });
-                    okBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            productQuantity.setText("Qty: " + qtyNo.getText().toString());
-                            qunatityDialog.dismiss();
-                        }
-                    });
-                    qunatityDialog.show();
-                }
-            });
+                        final EditText qtyNo = qunatityDialog.findViewById(R.id.quantity_no);
+                        Button cancelBtn = qunatityDialog.findViewById(R.id.cancel_btn);
+                        Button okBtn = qunatityDialog.findViewById(R.id.ok_btn);
+
+                        cancelBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                qunatityDialog.dismiss();
+                            }
+                        });
+                        okBtn.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                productQuantity.setText("Qty: " + qtyNo.getText().toString());
+                                qunatityDialog.dismiss();
+                            }
+                        });
+                        qunatityDialog.show();
+                    }
+                });
+            }
+            else{
+                productPrice.setText("Out Of Stock");
+                productPrice.setTextColor(itemView.getContext().getResources().getColor(R.color.red));
+
+                productQuantity.setVisibility(View.INVISIBLE);
+
+            }
+
 
             if(showDeleteBtn){
                 deleteBtn.setVisibility(View.VISIBLE);
@@ -220,6 +238,15 @@ public class CartAdapter extends RecyclerView.Adapter {
             }
             totalAmount.setText("Rs." + totalAmounttext + "/-");
             cartTotalAmount.setText("Rs." + totalAmounttext + "/-");
+
+            LinearLayout parent = (LinearLayout)cartTotalAmount.getParent().getParent();
+            if(totalItemPriceText == 0){
+                DBqueries.cartItemModelList.remove(DBqueries.cartItemModelList.size()-1);
+                parent.setVisibility(View.GONE);
+            }
+            else{
+                parent.setVisibility(View.VISIBLE);
+            }
 
 //            LinearLayout parent = (LinearLayout) cartTotalAmount.getParent().getParent();
 //            if (totalItemPriceText == 0) {

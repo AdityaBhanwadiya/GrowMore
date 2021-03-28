@@ -22,9 +22,10 @@ public class CartItemModel {
     private long productQuantity;
     private String farmerName;
     private String productPrice;
+    private boolean inStock;
 
 
-    public CartItemModel(int type, String productID, String productImage, String productTitle, String farmerName, long productQuantity, String productPrice) {
+    public CartItemModel(int type, String productID, String productImage, String productTitle, String farmerName, long productQuantity, String productPrice,boolean inStock) {
         this.type = type;
         this.productImage = productImage;
         this.productID = productID;
@@ -32,6 +33,15 @@ public class CartItemModel {
         this.productTitle = productTitle;
         this.farmerName = farmerName;
         this.productPrice = productPrice;
+        this.inStock = inStock;
+    }
+
+    public boolean isInStock() {
+        return inStock;
+    }
+
+    public void setInStock(boolean inStock) {
+        this.inStock = inStock;
     }
 
     public String getProductID() {
