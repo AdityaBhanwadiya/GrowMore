@@ -5,14 +5,24 @@ public class ViewAllModel {
     private long totalRatings;
     private String productImage;
     private String productTitle,rating,productPrice,productType;
+    private boolean inStock;
 
-    public ViewAllModel(String productImage, String productTitle,String productType, String rating, long totalRatings, String productPrice) {
+    public ViewAllModel(String productImage, String productTitle,String productType, String rating, long totalRatings, String productPrice,boolean inStock) {
         this.totalRatings = totalRatings;
         this.productImage = productImage;
         this.productTitle = productTitle;
         this.rating = rating;
         this.productPrice = productPrice;
         this.productType = productType;
+        this.inStock=inStock;
+    }
+
+    public boolean isInStock() {
+        return inStock;
+    }
+
+    public void setInStock(boolean inStock) {
+        this.inStock = inStock;
     }
 
     public long getTotalRatings() {

@@ -80,16 +80,6 @@ public class MyCartFragment extends Fragment {
         layoutManager.setOrientation(RecyclerView.VERTICAL);
         cartItemsRecyclerView.setLayoutManager(layoutManager);
 
-        if (DBqueries.cartItemModelList.size() == 0) {
-            DBqueries.cartList.clear();
-            DBqueries.loadCartList(getContext(), true,new TextView(getContext()));
-        } else {
-            if(cartItemModelList.get(cartItemModelList.size()-1).getType() == CartItemModel.TOTAL_AMOUNT) {
-                LinearLayout parent = (LinearLayout)totalAmount.getParent().getParent();
-                parent.setVisibility(View.VISIBLE);
-            }
-        }
-
 
         cartAdapter = new CartAdapter(DBqueries.cartItemModelList, totalAmount,true);
         cartItemsRecyclerView.setAdapter(cartAdapter);
@@ -100,6 +90,7 @@ public class MyCartFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 DeliveryActivity.cartItemModelList = new ArrayList<>();
+                DeliveryActivity.fromCart = true;
 
                 for(int x=0;x< cartItemModelList.size();x++){
                     CartItemModel cartItemModel = cartItemModelList.get(x);
@@ -112,6 +103,22 @@ public class MyCartFragment extends Fragment {
             }
         });
         return view;
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        cartAdapter.notifyDataSetChanged();
+        if (DBqueries.cartItemModelList.size() == 0) {
+            DBqueries.cartList.clear();
+            DBqueries.loadCartList(getContext(), true,new TextView(getContext()));
+        } else {
+            if(cartItemModelList.get(cartItemModelList.size()-1).getType() == CartItemModel.TOTAL_AMOUNT) {
+                LinearLayout parent = (LinearLayout)totalAmount.getParent().getParent();
+                parent.setVisibility(View.VISIBLE);
+            }
+        }
 
     }
 }

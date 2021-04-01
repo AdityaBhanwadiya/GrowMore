@@ -29,6 +29,13 @@
         <!-- Customize your theme here. -->
     </style>
 
+    <style name="paytmTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/bar</item>
+        <item name="colorPrimaryDark">@color/recyclerviewBck</item>
+        <item name="colorAccent">@android:color/holo_blue_dark</item>
+    </style>
+
     <style name="Theme.GrowMoreApp.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>

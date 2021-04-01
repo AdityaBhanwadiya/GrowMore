@@ -227,7 +227,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
                                                                     , documentSnapshot.get("farmer_name").toString()
                                                                     , (long) 100
                                                                     , documentSnapshot.get("product_price").toString()
-                                                                    , (boolean) documentSnapshot.get("in_stock")));
+                                                                    , (boolean) documentSnapshot.get("in_stock")
+                                                                    , (long) documentSnapshot.get("max-quantity")));
                                                         }
                                                         ALREADY_ADDED_TO_CART = true;
                                                         DBqueries.cartList.add(productID);
@@ -408,6 +409,7 @@ public class ProductDetailsActivity extends AppCompatActivity {
         buyNowBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                DeliveryActivity.fromCart=false;
 
                 //loadingDialog.show();
                 DeliveryActivity.cartItemModelList = new ArrayList<>();
@@ -418,7 +420,8 @@ public class ProductDetailsActivity extends AppCompatActivity {
                         , documentSnapshot.get("farmer_name").toString()
                         , (long) 100
                         , documentSnapshot.get("product_price").toString()
-                        , (boolean) documentSnapshot.get("in_stock")));
+                        , (boolean) documentSnapshot.get("in_stock")
+                        , (long) documentSnapshot.get("max-quantity")));
 
                 DeliveryActivity.cartItemModelList.add(new CartItemModel(CartItemModel.TOTAL_AMOUNT));
 
