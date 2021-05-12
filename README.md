@@ -23,14 +23,3 @@ Crop Guidance
   o Better crop produce and farmers have better income
   o High Yield and prescriptive guidance.
 
-
-
-STEPS:  
-1) If you want to simply have a glance of app than I have uploaded the APK file named GrowMore.apk
-2) If you want to run the entire project than you can simply download the zip file and put that in..
-3) C:\Users\NAME_OF_USER\AndroidStudioProjects\GrowMoreApp
-4) Let Android Studio do its work.It will take few minutes to set everything.
-5) And then you can run the application on EMULATOR or connect ny physical device.
-6) For using physical device you need to goto
-7) Settings->Developers Options->USB Debugging (ON)
-8) At present I have added details of only one product which is "CAVENDISH BANANA" in grid layout.
